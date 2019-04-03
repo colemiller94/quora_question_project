@@ -6,12 +6,14 @@ from fuzzywuzzy import fuzz
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.preprocessing import StandardScaler
-import xgboost as xgb
+#import xgboost as xgb
 from sklearn.metrics import confusion_matrix
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import cross_val_score
 from sklearn import svm
 from sklearn import linear_model
+from collections import defaultdict
+from tqdm import tqdm
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -183,7 +185,19 @@ def sim_of_diffs(doc1,doc2,pos=None):
 
 lemmastr = lambda l: "".join([item.lemma_+" " for item in l]).strip()
 
-##PARSE PIPELINE:
+##PREPARE PARSE PIPELINE:
+def prepare(traindf)
+    q1 = traindf['question1']
+    q2 = traindf['question2']
+
+    q1_it = iter(q1)
+    q2_it = iter(q2)
+
+    q1_docs_ = nlp.pipe(q1_it) #nlp.pipe takes an iterator and returns a generator that preforms spacy pipeline
+
+    q2_docs_ = nlp.pipe(q2_it)
+    return zip(q1_docs_,q2_docs_)
+
 def parse(tup_of_docgens,keep_docs=True,keep_text=False):
     feat_dict = defaultdict(list)
 
@@ -192,7 +206,7 @@ def parse(tup_of_docgens,keep_docs=True,keep_text=False):
         if keep_docs:
             feat_dict['q1_docs'].append(q1)
             feat_dict['q2_docs'].append(q2)
-        if keept_text:
+        if keep_text:
             feat_dict['q1_txt'].append(q1.text)
             feat_dict['q2_txt'].append(q2.text)
 
@@ -227,7 +241,7 @@ def parse(tup_of_docgens,keep_docs=True,keep_text=False):
 
 ##TESTING/CHECKING
 
-def feature_sampler(index,df=df,y=y):
+def feature_sampler(index,df=None,y=None):
     test1,test2 = (df.q1_docs.loc[index],df.q2_docs.loc[index])
     print(test1)
     print(test2)
