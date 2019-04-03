@@ -185,7 +185,19 @@ def sim_of_diffs(doc1,doc2,pos=None):
 
 lemmastr = lambda l: "".join([item.lemma_+" " for item in l]).strip()
 
-##PARSE PIPELINE:
+##PREPARE PARSE PIPELINE:
+def prepare(traindf)
+    q1 = traindf['question1']
+    q2 = traindf['question2']
+
+    q1_it = iter(q1)
+    q2_it = iter(q2)
+
+    q1_docs_ = nlp.pipe(q1_it) #nlp.pipe takes an iterator and returns a generator that preforms spacy pipeline
+
+    q2_docs_ = nlp.pipe(q2_it)
+    return zip(q1_docs_,q2_docs_)
+
 def parse(tup_of_docgens,keep_docs=True,keep_text=False):
     feat_dict = defaultdict(list)
 
