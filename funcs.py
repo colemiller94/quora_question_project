@@ -187,23 +187,25 @@ def sim_of_diffs(doc1,doc2,pos=None):
 lemmastr = lambda l: "".join([item.lemma_+" " for item in l]).strip()
 
 ##PREPARE PARSE PIPELINE:
-def prepare(traindf):
-    q1 = traindf['question1']
-    q2 = traindf['question2']
+# def prepare(traindf):
+#     q1 = traindf['question1']
+#     q2 = traindf['question2']
+#
+#     q1_it = iter(q1)
+#     q2_it = iter(q2)
+#
+#     q1_docs_ =  nlp.pipe(q1_it) #nlp.pipe takes an iterator and returns a generator that preforms spacy pipeline
+#
+#     q2_docs_ = nlp.pipe(q2_it)
+#     return zip(q1_docs_,q2_docs_)
 
-    q1_it = iter(q1)
-    q2_it = iter(q2)
+def parse(doc_pairs,keep_docs=True,keep_text=False):
 
-    q1_docs_ =  nlp.pipe(q1_it) #nlp.pipe takes an iterator and returns a generator that preforms spacy pipeline
-
-    q2_docs_ = nlp.pipe(q2_it)
-    return zip(q1_docs_,q2_docs_)
-
-def parse(tup_of_docgens,keep_docs=True,keep_text=False):
     feat_dict = defaultdict(list)
     pos_list = ['noun','verb','adj','adv']
 
-    for q1,q2 in tqdm(tup_of_docgens):
+    for q1,q2 in tqdm(tup_of_docs):
+
         if keep_docs:
             feat_dict['q1_docs'].append(q1)
             feat_dict['q2_docs'].append(q2)
@@ -214,6 +216,7 @@ def parse(tup_of_docgens,keep_docs=True,keep_text=False):
 
         feat_dict['sim'].append(q1.similarity(q2))
         feat_dict['sim_of_diffs'].append(sim_of_diffs(q1,q2))
+
         for pos in pos_list:
 
             feat_dict[f'sim_of_{pos}s'].append(sim_by_pos(q1,q2,pos))
@@ -235,25 +238,23 @@ def parse(tup_of_docgens,keep_docs=True,keep_text=False):
 def feature_sampler(index,df=None,y=None):
     test1,test2 = (df.q1_docs.loc[index],df.q2_docs.loc[index])
     pos_list = ['noun','verb','adj','adv']
-    print(test1)
-    print(test2)
-    print(y.loc[index])
+    print('question 1: ',test1)
+    print('question 2: ',test2)
+    print('is duplicate: ',y.loc[index])
+
     print('\n')
     print('similarities: ', test1.similarity(test2))
     print('similarity of differences: ',sim_of_diffs(test1,test2))
 
     for pos in pos_list:
-
-        print('\n _______f{pos}s_______')
+        print('\n _______%ss_______'%pos)
         print(get_pos_tags(test1,test2,pos))
-        print('___________________________')
-        print(f'{pos}_matchratio: ',pos_match_ratio(test1,test2,pos))
+        print('%s_matchratio: '%pos,pos_match_ratio(test1,test2,pos))
         print('sim: ',sim_by_pos(test1,test2,pos))
         print('s.o.d.s: ',sim_of_diffs(test1,test2,pos=pos))
 
     print('\n _______Proper_Nouns_______')
     print(get_pos_tags(test1,test2,'propn'))
-    print('___________________________')
    # print('has_propns: ',both_have_pos((test1,test2),'propn'))
     print('propn_matchratio:',pos_match_ratio(test1,test2,'propn'))
     print('sim: ',sim_by_pos(test1,test2,'propn'))
@@ -261,12 +262,10 @@ def feature_sampler(index,df=None,y=None):
 
     print('\n _______Entities_______')
     print(get_ents((test1,test2)))
-    print('___________________________')
     print('ent_matchratio: ',ent_match_ratio(test1,test2))
     #print('has_ents: ',both_have_ents((test1,test2)))
 
 
     print('\n _______Entity_Types_______')
     print(get_ent_types((test1,test2)))
-    print('___________________________')
     print('ent_type_match ratio: ',ent_type_match_ratio(test1,test2))
