@@ -205,6 +205,7 @@ def parse(doc_pairs,keep_docs=True,keep_text=False):
     pos_list = ['noun','verb','adj','adv']
 
     for q1,q2 in tqdm(tup_of_docs):
+
         if keep_docs:
             feat_dict['q1_docs'].append(q1)
             feat_dict['q2_docs'].append(q2)
@@ -217,6 +218,7 @@ def parse(doc_pairs,keep_docs=True,keep_text=False):
         feat_dict['sim_of_diffs'].append(sim_of_diffs(q1,q2))
 
         for pos in pos_list:
+
             feat_dict[f'sim_of_{pos}s'].append(sim_by_pos(q1,q2,pos))
             feat_dict[f'sim_of_diffs_{pos}s'].append(sim_of_diffs(q1,q2,pos=pos))
             feat_dict[f'{pos}_mratio'].append(pos_match_ratio(q1,q2,pos))
@@ -239,6 +241,7 @@ def feature_sampler(index,df=None,y=None):
     print('question 1: ',test1)
     print('question 2: ',test2)
     print('is duplicate: ',y.loc[index])
+
     print('\n')
     print('similarities: ', test1.similarity(test2))
     print('similarity of differences: ',sim_of_diffs(test1,test2))
