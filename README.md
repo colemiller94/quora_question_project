@@ -20,6 +20,8 @@ Because the problem has been solved best by complex deep learning models, we sou
 **Entity Type** refers to Spacy's named entity recognition. These are "real world objects with names", ie person, country, place, money, date  <br>
 **Entity** refers to the entity instance, ie Theresa May, Great Britain, $12.12, October 1999<br>
 
+## Feature Explorer
+![Duplicate](/resources/dup.png)
 
 ## Models
 ### Logistic Regression
@@ -28,9 +30,11 @@ Mean Cross Val Score: 67.17% <br>
 ### Random Forest 
 Mean Cross Val Score: 73.39% <br>
 Feature Importance:<br>
+![Feature Importance XGBoost](/resources/rf_fts.png)
 
 ### XGBoost 
 Mean Cross Val Score: 73.64% <br>
 Feature Importance:<br>
+![Feature Importance XGBoost](/resources/xgboost_fts.png)
 
 
